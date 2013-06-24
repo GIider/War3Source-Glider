@@ -80,8 +80,6 @@ And that's the art of the test!
 // 
 // total_hours_wasted_here = 39
 // 
-
-
 /**
 * For the brave souls who get this far: You are the chosen ones,
 * the valiant knights of programming who toil away, without rest,
@@ -118,7 +116,7 @@ And that's the art of the test!
 #define BRANCH "{branch}"
 #define BUILD_NUMBER "{build_number}"
 
-#define VERSION_NUM "2.{build_number}"
+#define VERSION_NUM "2.ALPHA"
 
 public Plugin:myinfo = 
 {
@@ -138,6 +136,9 @@ new Handle:hUseMetric;
 new Handle:introclannamecvar;
 new Handle:clanurl;
 
+new Handle:g_OnWar3PluginReadyHandle; //loadin default races in order
+new Handle:g_OnWar3PluginReadyHandle2; //other races
+new Handle:g_OnWar3PluginReadyHandle3; //other races backwards compatable
 
 new Handle:g_OnWar3EventSpawnFH;
 new Handle:g_OnWar3EventDeathFH;
@@ -147,18 +148,6 @@ new Handle:g_War3InterfaceExecFH;
 
 public APLRes:AskPluginLoad2Custom(Handle:myself,bool:late,String:error[],err_max)
 {
-    //DO NOT REMOVE this print, its for spacial separation for the server console output 
-    //Easier for the developer to see were relevant output begins
-    PrintToServer("[W3S] -= LOADING W3S =-");
-    PrintToServer("[W3S] #       #    #####     #####  ");
-    PrintToServer("[W3S] #   #   #   #     #   #     # ");
-    PrintToServer("[W3S] #   #   #         #   #       ");
-    PrintToServer("[W3S] #   #   #    #####     #####  ");
-    PrintToServer("[W3S] #   #   #         #         # ");
-    PrintToServer("[W3S] #   #   #   #     #   #     # ");
-    PrintToServer("[W3S]  ### ###     #####     #####  ");
-                         
-    
     new String:version[64];
     Format(version, sizeof(version), "%s by the War3Source Team", VERSION_NUM);
     CreateConVar("war3_version", version, "War3Source version.", FCVAR_PLUGIN|FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY|FCVAR_DONTRECORD);
@@ -213,7 +202,10 @@ War3Source_InitCVars()
 
 bool:War3Source_InitForwards()
 {
-   
+    g_OnWar3PluginReadyHandle = CreateGlobalForward("OnWar3LoadRaceOrItemOrdered", ET_Ignore, Param_Cell);//ordered
+    g_OnWar3PluginReadyHandle2 = CreateGlobalForward("OnWar3LoadRaceOrItemOrdered2", ET_Ignore, Param_Cell);//ordered
+    g_OnWar3PluginReadyHandle3 = CreateGlobalForward("OnWar3PluginReady", ET_Ignore); //unodered rest of the items or races. backwards compatable..
+    
     g_OnWar3EventSpawnFH = CreateGlobalForward("OnWar3EventSpawn", ET_Ignore, Param_Cell);
     g_OnWar3EventDeathFH = CreateGlobalForward("OnWar3EventDeath", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 
@@ -277,9 +269,8 @@ public Action:refreshcooldowns(client, args)
 public OnMapStart()
 {
     DoWar3InterfaceExecForward();
+    LoadRacesAndItems();
     
-    
-    DelayedWar3SourceCfgExecute();
     OneTimeForwards();
 }
 
@@ -295,7 +286,35 @@ public Action:OnGetGameDescription(String:gameDesc[64])
     return Plugin_Continue;
 }
 
+LoadRacesAndItems()
+{    
+    new Float:fStartTime = GetEngineTime();
 
+    //ordered loads
+    new res;
+    for(new i; i <= MAXRACES * 10; i++)
+    {
+        Call_StartForward(g_OnWar3PluginReadyHandle);
+        Call_PushCell(i);
+        Call_Finish(res);
+    }
+    
+    //orderd loads 2
+    for(new i; i <= MAXRACES * 10; i++)
+    {
+        Call_StartForward(g_OnWar3PluginReadyHandle2);
+        Call_PushCell(i);
+        Call_Finish(res);
+    }
+    
+    //unorderd loads
+    Call_StartForward(g_OnWar3PluginReadyHandle3);
+    Call_Finish(res);
+
+    PrintToServer("RACE ITEM LOAD FINISHED IN %.2f seconds", GetEngineTime() - fStartTime);
+    
+    DelayedWar3SourceCfgExecute();
+}
 
 DelayedWar3SourceCfgExecute()
 {
