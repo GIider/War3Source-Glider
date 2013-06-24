@@ -30,4 +30,4 @@ W3S came first to the source engine, WCS came later and matured faster under the
 languages, but reached its limit in performance and features compared to W3S. 
 
 The mod was originally founded by Anthony Iacono (AKA "pimpinjuice") who passed it on to Yi (Derek) Luo AKA Ownage | Ownz (DarkEnergy) who then
-passed it on to the community. To see a list of contributors since we've moved to Github check https://github.com/War3Source/War3Source/contributors
+passed it on to the community. This fork of War3Source is maintained by Glider, one of the previous core developers
