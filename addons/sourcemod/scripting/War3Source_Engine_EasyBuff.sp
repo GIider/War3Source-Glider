@@ -45,7 +45,7 @@ public OnPluginStart()
     g_hItemBuffValue = CreateArray(1);
 }
 
-AddSkillBuff()
+bool:AddSkillBuff()
 {
     new iRace = GetNativeCell(1);
     new iSkill = GetNativeCell(2);
@@ -58,7 +58,7 @@ AddSkillBuff()
            GetArrayCell(g_hSkillBuffs, i) == buff)
         {
             War3_LogInfo("[SKILL] Skipping buff %i for skill \"{skill %i}\" in \"{race %i}\": Already exists!", buff, iSkill, iRace);
-            return;
+            return false;
         }
     }
     
@@ -74,29 +74,33 @@ AddSkillBuff()
     PushArrayArray(g_hBuffSkillValues, values);
 
     War3_LogInfo("[SKILL] Created buff %i for skill \"{skill %i}\" in \"{race %i}\"", buff, iSkill, iRace);
+    
+    return true;
 }
 
 public Native_War3_AddSkillBuff(Handle:plugin, numParams)
 {
-    AddSkillBuff();
-    
-    // This ain't a aura
-    PushArrayCell(g_hAuraId, -1);
+    if(AddSkillBuff())
+    {
+        // This ain't a aura
+        PushArrayCell(g_hAuraId, -1);
+    }
 }
 
 public Native_War3_AddSkillAuraBuff(Handle:plugin, numParams)
 {
-    AddSkillBuff();
-    
-    decl String:auraShortName[32];
-    GetNativeString(5, auraShortName, sizeof(auraShortName));
-    new Float:distance = GetNativeCell(6);
-    new bool:bTrackOtherTeam = GetNativeCell(7);
-    
-    new iAuraID = W3RegisterAura(auraShortName, distance, bTrackOtherTeam);
-    PushArrayCell(g_hAuraId, iAuraID);
-    
-    War3_LogInfo("[AURA] Registered aura ID %i", iAuraID);
+    if(AddSkillBuff())
+    {
+        decl String:auraShortName[32];
+        GetNativeString(5, auraShortName, sizeof(auraShortName));
+        new Float:distance = GetNativeCell(6);
+        new bool:bTrackOtherTeam = GetNativeCell(7);
+        
+        new iAuraID = W3RegisterAura(auraShortName, distance, bTrackOtherTeam);
+        PushArrayCell(g_hAuraId, iAuraID);
+        
+        War3_LogInfo("[AURA] Registered aura ID %i", iAuraID);
+    }
 }
 
 public Native_War3_AddItemBuff(Handle:plugin, numParams)
