@@ -59,7 +59,7 @@ public OnPluginStart()
     if(War3_GetGame() != Game_L4D && War3_GetGame() != Game_L4D2)
         SetFailState("Only works in the L4D engine! %i", War3_GetGame());
 
-    hGameConf = LoadGameConfigFile("sm-left4dead2.games");
+    hGameConf = LoadGameConfigFile("l4d2addresses");
     if (hGameConf != INVALID_HANDLE)
     {
         StartPrepSDKCall(SDKCall_Player);
@@ -67,7 +67,7 @@ public OnPluginStart()
         hRoundRespawn = EndPrepSDKCall();
         if (hRoundRespawn == INVALID_HANDLE) 
         {
-            SetFailState("L4D_SM_Respawn: RoundRespawn Signature broken");
+            SetFailState("RoundRespawn Signature broken");
         }
       }
     
