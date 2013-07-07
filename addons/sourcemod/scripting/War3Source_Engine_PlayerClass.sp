@@ -352,7 +352,7 @@ public NW3ClearSkillLevels(Handle:plugin,numParams){
         new race=GetNativeCell(2);
         new raceSkillCount = War3_GetRaceSkillCount(race);
         for(new i=1;i<=raceSkillCount;i++)
-		{
+        {
             War3_SetSkillLevelINTERNAL(client,race,i,0);            
         }
     }
@@ -365,9 +365,9 @@ public NW3GetLevelsSpent(Handle:plugin,numParams){
     {
         new raceSkillCount = War3_GetRaceSkillCount(race);
         for(new i=1;i<=raceSkillCount;i++)
-		{
+        {
             ret+=War3_GetSkillLevelINTERNAL(client,race,i);
-		}
+        }
     }
     return ret;
 }
@@ -417,7 +417,7 @@ public Action:cmdwar3notdev(client,args){
 public OnClientPostAdminCheck(client)
 {
     new String:clientName[256];
-    GetClientName(client, clientName, sizeof(clientName));	
+    GetClientName(client, clientName, sizeof(clientName));    
     if(CheckCommandAccess(client, "war3_dev_access", ADMFLAG_ROOT, true)) 
     {
         LogMessage("Granted dev access to |%s|",clientName);

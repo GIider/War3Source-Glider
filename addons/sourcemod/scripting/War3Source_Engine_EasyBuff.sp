@@ -146,8 +146,8 @@ public OnWar3EventDeath(victim, client, deathrace)
 
 public OnRaceChanged(client, oldrace, newrace)
 {
-	ResetSkills(client, oldrace);
-	InitSkills(client, newrace);
+    ResetSkills(client, oldrace);
+    InitSkills(client, newrace);
 }
 
 ResetSkills(client, race)

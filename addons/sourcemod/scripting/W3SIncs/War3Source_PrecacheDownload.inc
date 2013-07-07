@@ -25,8 +25,8 @@ stock War3_AddFile(const String:filename[])
  * Add to downloads table and precaches a given sound.
  *
  * @param sound            Name of the sound to download and precache.
- * @param precache        If precache is true the file will be precached.
- * @param preload        If preload is true the file will be precached before level startup.
+ * @param precache         If precache is true the file will be precached.
+ * @param preload          If preload is true the file will be precached before level startup.
  * 
  * @return True if successfully precached, false otherwise.
  */

@@ -58,6 +58,11 @@ new String:sBuyTomeSound[256];
 
 public OnPluginStart()
 {
+    if(GAMEL4DANY)
+    {
+        SetFailState("Not compatible with the Left4Dead games");
+    }
+    
     if(GameCSANY())
     {
         HookEvent("round_start", Event_RoundStart);
