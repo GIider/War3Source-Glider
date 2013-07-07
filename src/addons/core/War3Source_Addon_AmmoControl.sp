@@ -49,6 +49,11 @@ public APLRes:AskPluginLoad2Custom(Handle:myself, bool:late, String:error[], err
 
 public OnPluginStart()
 {
+    if(!GAMECSANY)
+    {
+        SetFailState("Counter-Strike only");
+    }
+    
     // Offsets
     g_iOffsetPrimaryAmmoType = FindSendPropInfo("CBaseCombatWeapon", "m_iPrimaryAmmoType");
     g_iOffsetActiveWeapon = FindSendPropOffs("CBasePlayer", "m_hActiveWeapon");
